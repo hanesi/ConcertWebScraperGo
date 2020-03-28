@@ -15,7 +15,7 @@ import (
 func main() {
 	// Initialize variables and an AWS session with configured credentials
 	var key string
-	// var bandMap map[string]string
+	var bandMap map[string]string
 
 	sess, err := session.NewSession(&aws.Config{
 		Region: aws.String("us-east-1")},
@@ -53,10 +53,17 @@ func main() {
 		fmt.Println(err)
 	}
 
+	// Create a new buffer and copy the bytes into it
 	buf := bytes.NewBuffer(nil)
 	if _, err := io.Copy(buf, obj.Body); err != nil {
 		fmt.Println(err)
 	}
-	test, _ := json.Marshal(buf.Bytes())
-	fmt.Println(test)
+
+	// Unmarshal the JSON into bandMap
+	err = json.Unmarshal(buf.Bytes(), &bandMap)
+	if err != nil {
+		fmt.Println("error:", err)
+	}
+	fmt.Println(bandMap)
+	fmt.Printf("%T\n", bandMap)
 }
